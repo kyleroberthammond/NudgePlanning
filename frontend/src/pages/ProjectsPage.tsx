@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useProjects } from '../hooks/useProjects'
-import { ProjectFormModal } from '../components/projects/ProjectFormModal'
-import { ProjectKanban } from '../components/projects/ProjectKanban'
-import { ProjectList } from '../components/projects/ProjectList'
-import { ViewToggle } from '../components/projects/ViewToggle'
-import type { ProjectsView } from '../components/projects/ViewToggle'
+import { ItemFormModal } from '../components/shared/ItemFormModal'
+import { TrackableKanban } from '../components/shared/TrackableKanban'
+import { TrackableList } from '../components/shared/TrackableList'
+import { ViewToggle } from '../components/shared/ViewToggle'
+import type { ProjectsView } from '../components/shared/ViewToggle'
 import type { Project } from '../types'
 
 const VIEW_KEY = 'nudgeplanning.projectsView'
@@ -21,15 +22,13 @@ function loadStoredView(): ProjectsView {
 /** Is the user currently typing somewhere, so single-key shortcuts should be ignored? */
 function isTypingTarget(target: EventTarget | null): boolean {
   if (!(target instanceof HTMLElement)) return false
-  return (
-    target.isContentEditable ||
-    ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
-  )
+  return target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)
 }
 
 export function ProjectsPage() {
   const { projects, loading, error, createProject, updateProject, updateStatus, deleteProject } =
     useProjects()
+  const navigate = useNavigate()
   const [view, setView] = useState<ProjectsView>(loadStoredView)
   const [modalOpen, setModalOpen] = useState(false)
   const [editingProject, setEditingProject] = useState<Project | null>(null)
@@ -99,18 +98,25 @@ export function ProjectsPage() {
 
       {projects.length > 0 &&
         (view === 'list' ? (
-          <ProjectList projects={projects} onSelect={openEditModal} />
+          <TrackableList
+            items={projects}
+            onOpen={(project) => navigate(`/projects/${project.id}`)}
+            onEdit={openEditModal}
+          />
         ) : (
-          <ProjectKanban
-            projects={projects}
-            onSelect={openEditModal}
+          <TrackableKanban
+            items={projects}
+            emptyLabel="No projects"
+            onOpen={(project) => navigate(`/projects/${project.id}`)}
+            onEdit={openEditModal}
             onStatusChange={(id, status) => void updateStatus(id, status)}
           />
         ))}
 
       {modalOpen && (
-        <ProjectFormModal
-          project={editingProject}
+        <ItemFormModal
+          itemLabel="project"
+          item={editingProject}
           onClose={() => setModalOpen(false)}
           onSubmit={async (input) => {
             if (editingProject) {

@@ -7,6 +7,39 @@
 import { BaseModel, column } from '@adonisjs/lucid/orm'
 import { DateTime } from 'luxon'
 
+export class AttachmentSchema extends BaseModel {
+  static $columns = [
+    'attachableId',
+    'attachableType',
+    'createdAt',
+    'filename',
+    'id',
+    'mimeType',
+    'size',
+    'storageKey',
+    'userId',
+  ] as const
+  $columns = AttachmentSchema.$columns
+  @column()
+  declare attachableId: number
+  @column()
+  declare attachableType: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column()
+  declare filename: string
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare mimeType: string
+  @column()
+  declare size: number
+  @column()
+  declare storageKey: string
+  @column()
+  declare userId: number
+}
+
 export class AuthAccessTokenSchema extends BaseModel {
   static $columns = [
     'abilities',
@@ -43,6 +76,66 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class CommentSchema extends BaseModel {
+  static $columns = [
+    'body',
+    'commentableId',
+    'commentableType',
+    'createdAt',
+    'id',
+    'updatedAt',
+    'userId',
+  ] as const
+  $columns = CommentSchema.$columns
+  @column()
+  declare body: string
+  @column()
+  declare commentableId: number
+  @column()
+  declare commentableType: string
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+}
+
+export class FeatureSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'dueDate',
+    'id',
+    'name',
+    'projectId',
+    'releaseId',
+    'startDate',
+    'status',
+    'updatedAt',
+  ] as const
+  $columns = FeatureSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.date()
+  declare dueDate: DateTime | null
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare projectId: number
+  @column()
+  declare releaseId: number | null
+  @column.date()
+  declare startDate: DateTime | null
+  @column()
+  declare status: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
 export class ProjectSchema extends BaseModel {
   static $columns = [
     'createdAt',
@@ -71,6 +164,66 @@ export class ProjectSchema extends BaseModel {
   declare updatedAt: DateTime | null
   @column()
   declare userId: number
+}
+
+export class ReleaseSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'id',
+    'name',
+    'projectId',
+    'status',
+    'targetDate',
+    'updatedAt',
+  ] as const
+  $columns = ReleaseSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare projectId: number
+  @column()
+  declare status: string
+  @column.date()
+  declare targetDate: DateTime | null
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+}
+
+export class TaskSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'dueDate',
+    'featureId',
+    'id',
+    'name',
+    'releaseId',
+    'startDate',
+    'status',
+    'updatedAt',
+  ] as const
+  $columns = TaskSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column.date()
+  declare dueDate: DateTime | null
+  @column()
+  declare featureId: number
+  @column({ isPrimary: true })
+  declare id: number
+  @column()
+  declare name: string
+  @column()
+  declare releaseId: number | null
+  @column.date()
+  declare startDate: DateTime | null
+  @column()
+  declare status: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
 }
 
 export class UserSchema extends BaseModel {

@@ -17,16 +17,29 @@ token, there's no server-rendered views or shared build step.
 - Session persists across page reloads (token kept in `localStorage`, validated against
   `GET /api/v1/account/profile` on load)
 
-**Projects**
+**Projects → Features → Tasks**
 
-- A project is just a name, start date, due date, and status (`Not Started`, `In Progress`,
-  `On Hold`, `Completed`) — each user only sees their own
-- `/projects` has a List/Kanban toggle (preference remembered per-browser); the Kanban board
-  supports drag-and-drop between columns to change status
-- Press <kbd>C</kbd> anywhere on the page (not while typing in a field) to open the
-  "new project" form
+- Three levels deep: a project has many features, a feature has many tasks. Each level
+  shares the same fields — name, start date, due date, status (`Not Started`, `In Progress`,
+  `On Hold`, `Completed`) — and each user only sees their own tree
+- Every list (`/projects`, a project's features, a feature's tasks) has a List/Kanban toggle
+  (preference remembered per-browser); Kanban supports drag-and-drop between columns to
+  change status
+- Press <kbd>C</kbd> anywhere on a list page (not while typing in a field) to open the "new"
+  form for whatever you're looking at
+- Feature and task pages have **comments** (threaded by author) and **attachments** (drag a
+  file in, or click to browse; download re-fetches with your auth token since it's not a
+  plain static link)
+- Breadcrumbs (Project / Feature / Task) on every detail page
 
-Tasks, boards per project, etc. aren't built yet — that's next.
+**Releases**
+
+- A release belongs to a project and can have features and/or tasks assigned to it (a
+  feature/task can only be in one release at a time — reassigning moves it)
+- Assign from the release's own page (an "Add items" picker over the project's features/
+  tasks) or set a feature/task's Release field directly when creating/editing it from its
+  project page
+- Deleting a release un-assigns its items rather than deleting them
 
 ## Running it locally
 
@@ -61,22 +74,33 @@ Open http://localhost:5173 — it redirects to `/signup` the first time.
 
 ## API surface (v1)
 
-All routes are prefixed with `/api/v1`.
+All routes are prefixed with `/api/v1` and require `Authorization: Bearer <token>` unless
+noted. `startDate`/`dueDate`/`targetDate` are plain `"YYYY-MM-DD"` strings or `null`.
+Project/feature/task `status` is one of `not_started`, `in_progress`, `on_hold`, `completed`;
+release `status` is one of `planned`, `in_progress`, `released`.
 
-| Method | Path              | Auth | Description                          |
-| ------ | ----------------- | ---- | ------------------------------------- |
-| POST   | `/auth/signup`     | No   | Create an account, returns a token    |
-| POST   | `/auth/login`      | No   | Log in, returns a token               |
-| GET    | `/account/profile` | Yes  | Current user                          |
-| POST   | `/account/logout`  | Yes  | Revoke the current token              |
-| GET    | `/projects`        | Yes  | List the current user's projects      |
-| POST   | `/projects`        | Yes  | Create a project                      |
-| PUT    | `/projects/:id`    | Yes  | Update a project (full or partial)    |
-| DELETE | `/projects/:id`    | Yes  | Delete a project                      |
+| Method | Path                              | Description                              |
+| ------ | --------------------------------- | ----------------------------------------- |
+| POST   | `/auth/signup`                    | Create an account, returns a token (no auth) |
+| POST   | `/auth/login`                     | Log in, returns a token (no auth)         |
+| GET    | `/account/profile`                | Current user                              |
+| POST   | `/account/logout`                 | Revoke the current token                  |
+| GET/POST | `/projects`                     | List / create projects                    |
+| GET/PUT/DELETE | `/projects/:id`            | A project, with its features/tasks/releases on GET |
+| GET/POST | `/projects/:projectId/features` | List / create a project's features        |
+| GET/PUT/DELETE | `/features/:id`            | A feature, with its tasks/comments/attachments on GET |
+| GET/POST | `/features/:featureId/tasks`    | List / create a feature's tasks           |
+| GET/PUT/DELETE | `/tasks/:id`                | A task, with its comments/attachments on GET |
+| GET/POST | `/projects/:projectId/releases` | List / create a project's releases        |
+| GET/PUT/DELETE | `/releases/:id`             | A release, with its assigned features/tasks on GET |
+| GET/POST | `/features/:featureId/comments` and `/tasks/:taskId/comments` | List / add comments |
+| DELETE | `/comments/:id`                   | Delete your own comment                   |
+| GET/POST | `/features/:featureId/attachments` and `/tasks/:taskId/attachments` | List / upload (multipart) |
+| GET    | `/attachments/:id/download`       | Download a file                           |
+| DELETE | `/attachments/:id`                | Delete a file                             |
 
-Authenticated requests send `Authorization: Bearer <token>`. A project's `startDate` and
-`dueDate` are plain `"YYYY-MM-DD"` strings or `null`; `status` is one of `not_started`,
-`in_progress`, `on_hold`, `completed`.
+A feature/task's `releaseId` (settable via its own PUT, or via the release's picker) is
+`null` when unassigned; setting it validates the release belongs to the same project.
 
 ## Tech choices
 
@@ -87,3 +111,12 @@ Authenticated requests send `Authorization: Bearer <token>`. A project's `startD
 - **Token auth over sessions** — the frontend is a separate origin/app, so a bearer token
   in `localStorage` is simpler than cross-origin session cookies. CORS is wide open in
   dev (`config/cors.ts`) and locked down (empty allowlist) by default in production.
+- **Attachments on local disk** — uploaded files land in `backend/storage/uploads/` (not
+  committed; not under `public/`, so downloads always go through the auth-checked route).
+  Swap in real object storage (S3, etc.) if this ever needs to run somewhere the local
+  disk isn't durable.
+- **Comments/attachments are polymorphic, not per-table** — one `comments` table and one
+  `attachments` table, each with a `commentable_type`/`attachable_type` column (`feature`
+  or `task`) instead of a real foreign key, since SQLite can't FK against "whichever table
+  this row happens to point at." Ownership and cleanup on delete are handled in
+  `app/services/ownership.ts` and `app/services/cleanup.ts` instead of at the DB level.

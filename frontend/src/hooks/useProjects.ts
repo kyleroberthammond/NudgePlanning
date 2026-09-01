@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { projectsApi } from '../lib/projects'
-import type { Project, ProjectInput, ProjectStatus } from '../types'
+import type { ItemStatus, Project, ProjectInput } from '../types'
 
 export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([])
@@ -37,7 +37,7 @@ export function useProjects() {
 
   /** Optimistically moves a card to a new column, rolling back on failure. */
   const updateStatus = useCallback(
-    async (id: number, status: ProjectStatus) => {
+    async (id: number, status: ItemStatus) => {
       const previous = projects
       setProjects((current) => current.map((p) => (p.id === id ? { ...p, status } : p)))
       try {
