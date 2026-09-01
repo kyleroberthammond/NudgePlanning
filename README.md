@@ -21,7 +21,9 @@ Project/task management features are not built yet — that's next.
 
 ## Running it locally
 
-You need both processes running at once.
+You need both processes running at once. Each app pins its Node version via
+`.nvmrc` (also at the repo root) — run `nvm use` in a directory before installing
+if you use [nvm](https://github.com/nvm-sh/nvm).
 
 ### Backend (http://localhost:3333)
 
