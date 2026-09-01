@@ -16,7 +16,7 @@ export function GuestRoute() {
   const { user, loading } = useAuth()
 
   if (loading) return null
-  if (user) return <Navigate to="/dashboard" replace />
+  if (user) return <Navigate to="/projects" replace />
 
   return <Outlet />
 }

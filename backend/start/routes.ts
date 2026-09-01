@@ -33,5 +33,15 @@ router
       .prefix('account')
       .as('profile')
       .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.get('projects', [controllers.Projects, 'index'])
+        router.post('projects', [controllers.Projects, 'store'])
+        router.put('projects/:id', [controllers.Projects, 'update'])
+        router.delete('projects/:id', [controllers.Projects, 'destroy'])
+      })
+      .as('projects')
+      .use(middleware.auth())
   })
   .prefix('/api/v1')

@@ -18,7 +18,7 @@ export function LoginPage() {
     setSubmitting(true)
     try {
       await login(email, password)
-      navigate('/dashboard', { replace: true })
+      navigate('/projects', { replace: true })
     } catch (err) {
       setError(err instanceof ApiError ? err.message : 'Unable to log in. Please try again.')
     } finally {
