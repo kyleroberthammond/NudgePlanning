@@ -20,7 +20,7 @@ export function SignupPage() {
     setSubmitting(true)
     try {
       await signup(fullName, email, password, passwordConfirmation)
-      navigate('/dashboard', { replace: true })
+      navigate('/projects', { replace: true })
     } catch (err) {
       if (err instanceof ApiError) {
         setErrors(err.errors.map((e) => e.message))

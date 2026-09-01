@@ -30,6 +30,30 @@ const routes = {
     tokens: [{"old":"/api/v1/account/logout","type":0,"val":"api","end":""},{"old":"/api/v1/account/logout","type":0,"val":"v1","end":""},{"old":"/api/v1/account/logout","type":0,"val":"account","end":""},{"old":"/api/v1/account/logout","type":0,"val":"logout","end":""}],
     types: placeholder as Registry['profile.access_tokens.destroy']['types'],
   },
+  'projects.projects.index': {
+    methods: ["GET","HEAD"],
+    pattern: '/api/v1/projects',
+    tokens: [{"old":"/api/v1/projects","type":0,"val":"api","end":""},{"old":"/api/v1/projects","type":0,"val":"v1","end":""},{"old":"/api/v1/projects","type":0,"val":"projects","end":""}],
+    types: placeholder as Registry['projects.projects.index']['types'],
+  },
+  'projects.projects.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/projects',
+    tokens: [{"old":"/api/v1/projects","type":0,"val":"api","end":""},{"old":"/api/v1/projects","type":0,"val":"v1","end":""},{"old":"/api/v1/projects","type":0,"val":"projects","end":""}],
+    types: placeholder as Registry['projects.projects.store']['types'],
+  },
+  'projects.projects.update': {
+    methods: ["PUT"],
+    pattern: '/api/v1/projects/:id',
+    tokens: [{"old":"/api/v1/projects/:id","type":0,"val":"api","end":""},{"old":"/api/v1/projects/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/projects/:id","type":0,"val":"projects","end":""},{"old":"/api/v1/projects/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['projects.projects.update']['types'],
+  },
+  'projects.projects.destroy': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/projects/:id',
+    tokens: [{"old":"/api/v1/projects/:id","type":0,"val":"api","end":""},{"old":"/api/v1/projects/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/projects/:id","type":0,"val":"projects","end":""},{"old":"/api/v1/projects/:id","type":1,"val":"id","end":""}],
+    types: placeholder as Registry['projects.projects.destroy']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

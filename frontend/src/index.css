@@ -91,23 +91,57 @@ a {
   outline-offset: -1px;
 }
 
-button.primary {
-  width: 100%;
-  padding: 10px 12px;
-  background: var(--accent);
-  color: white;
-  border: none;
+button.primary,
+button.secondary,
+button.danger {
+  padding: 10px 16px;
   border-radius: 8px;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.auth-card button.primary {
+  width: 100%;
+  justify-content: center;
+}
+
+button.primary {
+  background: var(--accent);
+  color: white;
+  border: none;
 }
 
 button.primary:hover {
   background: var(--accent-hover);
 }
 
-button.primary:disabled {
+button.secondary {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+button.secondary:hover {
+  background: var(--bg);
+}
+
+button.danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid transparent;
+}
+
+button.danger:hover {
+  border-color: var(--danger);
+}
+
+button.primary:disabled,
+button.secondary:disabled,
+button.danger:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
@@ -119,6 +153,17 @@ button.link {
   cursor: pointer;
   padding: 0;
   font-size: inherit;
+}
+
+kbd {
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+  padding: 1px 6px;
+  line-height: 1.4;
 }
 
 .form-error {
@@ -179,7 +224,7 @@ button.link {
 .app-main {
   flex: 1;
   padding: 32px 24px;
-  max-width: 960px;
+  max-width: 1200px;
   width: 100%;
   margin: 0 auto;
 }
@@ -190,4 +235,301 @@ button.link {
   padding: 48px 24px;
   text-align: center;
   color: var(--text-muted);
+}
+
+.empty-state button.primary {
+  margin-top: 16px;
+}
+
+/* Projects page */
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.page-header h1 {
+  margin: 0;
+}
+
+.page-header .subtitle {
+  margin: 4px 0 0;
+  color: var(--text-muted);
+}
+
+.page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.page-header-actions button.primary kbd {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* View toggle */
+
+.view-toggle {
+  display: inline-flex;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.view-toggle button {
+  border: none;
+  background: none;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.view-toggle button.active {
+  background: var(--accent);
+  color: white;
+}
+
+/* Status badge */
+
+.status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-not_started {
+  background: #eef0f2;
+  color: #52525b;
+}
+
+.status-in_progress {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
+.status-on_hold {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-completed {
+  background: #dcfce7;
+  color: #166534;
+}
+
+/* List view */
+
+.project-list {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.project-list-header,
+.project-list-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  text-align: left;
+}
+
+.project-list-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+
+.project-list-row {
+  width: 100%;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+
+.project-list-row:last-child {
+  border-bottom: none;
+}
+
+.project-list-row:hover {
+  background: var(--bg);
+}
+
+.project-name {
+  font-weight: 600;
+}
+
+/* Kanban view */
+
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
+  gap: 16px;
+  overflow-x: auto;
+}
+
+.kanban-column {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 200px;
+}
+
+.kanban-column.drag-over {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+}
+
+.kanban-column-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  padding: 0 4px;
+}
+
+.kanban-count {
+  background: var(--bg);
+  border-radius: 999px;
+  padding: 1px 8px;
+  font-size: 0.75rem;
+}
+
+.kanban-column-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.kanban-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  cursor: grab;
+  text-align: left;
+}
+
+.kanban-card:hover {
+  border-color: var(--accent);
+}
+
+.kanban-card.dragging {
+  opacity: 0.5;
+}
+
+.kanban-card-name {
+  font-weight: 600;
+  font-size: 0.92rem;
+  margin-bottom: 4px;
+}
+
+.kanban-card-dates {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.kanban-empty {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  padding: 8px 4px;
+  text-align: center;
+}
+
+/* Modal */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 100;
+}
+
+.modal-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-card h2 {
+  margin: 0 0 20px;
+  font-size: 1.25rem;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field select {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.modal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 8px;
+}
+
+.modal-actions-right {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+@media (max-width: 720px) {
+  .kanban {
+    grid-template-columns: 1fr;
+  }
+
+  .project-list-header,
+  .project-list-row {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .project-list-header span:nth-child(3),
+  .project-list-row span:nth-child(3) {
+    display: none;
+  }
 }

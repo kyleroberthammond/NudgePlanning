@@ -10,14 +10,23 @@ token, there's no server-rendered views or shared build step.
 
 ## What's here so far
 
-Bootstrapped app skeleton with working auth:
+**Auth**
 
 - Sign up, log in, log out (token-based, via `@adonisjs/auth` access tokens)
-- A protected dashboard route in the frontend that redirects to `/login` when signed out
+- A protected app shell in the frontend that redirects to `/login` when signed out
 - Session persists across page reloads (token kept in `localStorage`, validated against
   `GET /api/v1/account/profile` on load)
 
-Project/task management features are not built yet — that's next.
+**Projects**
+
+- A project is just a name, start date, due date, and status (`Not Started`, `In Progress`,
+  `On Hold`, `Completed`) — each user only sees their own
+- `/projects` has a List/Kanban toggle (preference remembered per-browser); the Kanban board
+  supports drag-and-drop between columns to change status
+- Press <kbd>C</kbd> anywhere on the page (not while typing in a field) to open the
+  "new project" form
+
+Tasks, boards per project, etc. aren't built yet — that's next.
 
 ## Running it locally
 
@@ -54,14 +63,20 @@ Open http://localhost:5173 — it redirects to `/signup` the first time.
 
 All routes are prefixed with `/api/v1`.
 
-| Method | Path                | Auth | Description                     |
-| ------ | ------------------- | ---- | -------------------------------- |
-| POST   | `/auth/signup`       | No   | Create an account, returns a token |
-| POST   | `/auth/login`        | No   | Log in, returns a token          |
-| GET    | `/account/profile`   | Yes  | Current user                     |
-| POST   | `/account/logout`    | Yes  | Revoke the current token         |
+| Method | Path              | Auth | Description                          |
+| ------ | ----------------- | ---- | ------------------------------------- |
+| POST   | `/auth/signup`     | No   | Create an account, returns a token    |
+| POST   | `/auth/login`      | No   | Log in, returns a token               |
+| GET    | `/account/profile` | Yes  | Current user                          |
+| POST   | `/account/logout`  | Yes  | Revoke the current token              |
+| GET    | `/projects`        | Yes  | List the current user's projects      |
+| POST   | `/projects`        | Yes  | Create a project                      |
+| PUT    | `/projects/:id`    | Yes  | Update a project (full or partial)    |
+| DELETE | `/projects/:id`    | Yes  | Delete a project                      |
 
-Authenticated requests send `Authorization: Bearer <token>`.
+Authenticated requests send `Authorization: Bearer <token>`. A project's `startDate` and
+`dueDate` are plain `"YYYY-MM-DD"` strings or `null`; `status` is one of `not_started`,
+`in_progress`, `on_hold`, `completed`.
 
 ## Tech choices
 
