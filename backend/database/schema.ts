@@ -43,6 +43,33 @@ export class AuthAccessTokenSchema extends BaseModel {
   declare updatedAt: DateTime | null
 }
 
+export class DeviceTokenSchema extends BaseModel {
+  static $columns = [
+    'createdAt',
+    'id',
+    'lastUsedAt',
+    'platform',
+    'token',
+    'updatedAt',
+    'userId',
+  ] as const
+  $columns = DeviceTokenSchema.$columns
+  @column.dateTime({ autoCreate: true })
+  declare createdAt: DateTime
+  @column({ isPrimary: true })
+  declare id: number
+  @column.dateTime()
+  declare lastUsedAt: DateTime
+  @column()
+  declare platform: string
+  @column()
+  declare token: string
+  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  declare updatedAt: DateTime | null
+  @column()
+  declare userId: number
+}
+
 export class ProjectSchema extends BaseModel {
   static $columns = [
     'createdAt',

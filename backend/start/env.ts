@@ -24,4 +24,11 @@ export default await Env.create(new URL('../', import.meta.url), {
 
   // Session
   SESSION_DRIVER: Env.schema.enum(['cookie', 'memory', 'database'] as const),
+
+  // Firebase Cloud Messaging (push notifications) — optional. Without these,
+  // the app still runs fine; sending a push just fails with a clear error
+  // instead of silently doing nothing.
+  FIREBASE_PROJECT_ID: Env.schema.string.optional(),
+  FIREBASE_CLIENT_EMAIL: Env.schema.string.optional(),
+  FIREBASE_PRIVATE_KEY: Env.schema.string.optional(),
 })

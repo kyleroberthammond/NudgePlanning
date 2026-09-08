@@ -59,6 +59,49 @@ npm run dev
 
 Open http://localhost:5173 — it redirects to `/signup` the first time.
 
+### Android app (Capacitor)
+
+`frontend/android` is a [Capacitor](https://capacitorjs.com) wrapper around the same React
+app, so it stays in sync with the web build rather than being a separate codebase.
+
+```sh
+cd frontend
+npm run build      # produces dist/
+npx cap sync android   # copies dist/ into the Android project + updates native plugins
+npx cap open android   # opens the project in Android Studio
+```
+
+Run the app from Android Studio (or `cd android && ./gradlew assembleDebug` if you have the
+Android SDK set up without Studio). Repeat the `build` + `sync` steps after every frontend
+change you want reflected in the app.
+
+#### Push notifications
+
+Push is wired end to end (device registration → backend storage → Firebase Cloud Messaging)
+but needs a Firebase project to actually deliver anything, since FCM is Google's delivery
+mechanism and there's no way around having credentials for it:
+
+1. Create a Firebase project at https://console.firebase.google.com (free tier is fine).
+2. Add an Android app to it with package name `com.nudgeplanning.app`.
+3. Download the generated `google-services.json` and place it at
+   `frontend/android/app/google-services.json` (see
+   `google-services.json.example` in that folder for the shape — this real file is
+   gitignored since it's per-developer/per-project, not a secret to share around casually).
+4. In Firebase Console, go to Project settings → Service accounts → Generate new private
+   key. That JSON gives you `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL` and
+   `FIREBASE_PRIVATE_KEY` — set those in `backend/.env` (see `.env.example`; the private key
+   has literal `\n` sequences in it, which is fine, they get unescaped at runtime).
+5. Rebuild the Android app (`npm run build && npx cap sync android`) so the new
+   `google-services.json` gets picked up, then run it on a device or emulator with Google
+   Play services.
+
+Once a signed-in user opens the app, it requests notification permission, registers with
+FCM, and POSTs the resulting token to `POST /api/v1/account/device-tokens`. The "Send test
+notification" button in the header hits `POST /api/v1/account/push-test`, which sends a push
+to every device registered for the current user via `PushNotificationService` — useful for
+confirming the whole pipeline works before building any real notification-triggering
+features on top of it.
+
 ## API surface (v1)
 
 All routes are prefixed with `/api/v1`.
@@ -73,6 +116,9 @@ All routes are prefixed with `/api/v1`.
 | POST   | `/projects`        | Yes  | Create a project                      |
 | PUT    | `/projects/:id`    | Yes  | Update a project (full or partial)    |
 | DELETE | `/projects/:id`    | Yes  | Delete a project                      |
+| POST   | `/account/device-tokens`       | Yes  | Register this device's push token       |
+| DELETE | `/account/device-tokens/:token` | Yes  | Unregister a device's push token        |
+| POST   | `/account/push-test`           | Yes  | Send a test push to the user's devices  |
 
 Authenticated requests send `Authorization: Bearer <token>`. A project's `startDate` and
 `dueDate` are plain `"YYYY-MM-DD"` strings or `null`; `status` is one of `not_started`,

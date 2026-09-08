@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { api, getToken, setToken } from '../lib/api'
+import { initPushNotifications, teardownPushNotifications } from '../lib/pushNotifications'
 import type { AuthPayload, User } from '../types'
 
 interface AuthContextValue {
@@ -35,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         const profile = await api.get<User>('/account/profile')
         if (!cancelled) setUser(profile)
+        void initPushNotifications()
       } catch {
         // Token missing/expired/invalid — drop it and treat as signed out.
         setToken(null)
@@ -56,6 +58,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     })
     setToken(token)
     setUser(loggedInUser)
+    void initPushNotifications()
   }, [])
 
   const signup = useCallback(
@@ -68,11 +71,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       })
       setToken(token)
       setUser(newUser)
+      void initPushNotifications()
     },
     [],
   )
 
   const logout = useCallback(async () => {
+    await teardownPushNotifications()
     try {
       await api.post('/account/logout')
     } catch {

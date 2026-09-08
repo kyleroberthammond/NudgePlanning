@@ -208,6 +208,11 @@ kbd {
   gap: 12px;
 }
 
+.push-status {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
 .avatar {
   width: 32px;
   height: 32px;

@@ -43,5 +43,13 @@ router
       })
       .as('projects')
       .use(middleware.auth())
+
+    router
+      .group(() => {
+        router.post('account/device-tokens', [controllers.DeviceTokens, 'store'])
+        router.delete('account/device-tokens/:token', [controllers.DeviceTokens, 'destroy'])
+        router.post('account/push-test', [controllers.PushTest, 'store'])
+      })
+      .use(middleware.auth())
   })
   .prefix('/api/v1')

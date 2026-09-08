@@ -1,0 +1,7 @@
+/build/*
+!/build/.npmkeep
+
+# Per-developer Firebase config for push notifications — copy
+# google-services.json.example to google-services.json and fill in your own
+# Firebase project's values (see the root README).
+/google-services.json

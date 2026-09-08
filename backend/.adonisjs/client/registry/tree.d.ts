@@ -26,4 +26,11 @@ export interface ApiDefinition {
       destroy: typeof routes['projects.projects.destroy']
     }
   }
+  deviceTokens: {
+    store: typeof routes['device_tokens.store']
+    destroy: typeof routes['device_tokens.destroy']
+  }
+  pushTest: {
+    store: typeof routes['push_test.store']
+  }
 }

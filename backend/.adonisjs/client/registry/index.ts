@@ -54,6 +54,24 @@ const routes = {
     tokens: [{"old":"/api/v1/projects/:id","type":0,"val":"api","end":""},{"old":"/api/v1/projects/:id","type":0,"val":"v1","end":""},{"old":"/api/v1/projects/:id","type":0,"val":"projects","end":""},{"old":"/api/v1/projects/:id","type":1,"val":"id","end":""}],
     types: placeholder as Registry['projects.projects.destroy']['types'],
   },
+  'device_tokens.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/account/device-tokens',
+    tokens: [{"old":"/api/v1/account/device-tokens","type":0,"val":"api","end":""},{"old":"/api/v1/account/device-tokens","type":0,"val":"v1","end":""},{"old":"/api/v1/account/device-tokens","type":0,"val":"account","end":""},{"old":"/api/v1/account/device-tokens","type":0,"val":"device-tokens","end":""}],
+    types: placeholder as Registry['device_tokens.store']['types'],
+  },
+  'device_tokens.destroy': {
+    methods: ["DELETE"],
+    pattern: '/api/v1/account/device-tokens/:token',
+    tokens: [{"old":"/api/v1/account/device-tokens/:token","type":0,"val":"api","end":""},{"old":"/api/v1/account/device-tokens/:token","type":0,"val":"v1","end":""},{"old":"/api/v1/account/device-tokens/:token","type":0,"val":"account","end":""},{"old":"/api/v1/account/device-tokens/:token","type":0,"val":"device-tokens","end":""},{"old":"/api/v1/account/device-tokens/:token","type":1,"val":"token","end":""}],
+    types: placeholder as Registry['device_tokens.destroy']['types'],
+  },
+  'push_test.store': {
+    methods: ["POST"],
+    pattern: '/api/v1/account/push-test',
+    tokens: [{"old":"/api/v1/account/push-test","type":0,"val":"api","end":""},{"old":"/api/v1/account/push-test","type":0,"val":"v1","end":""},{"old":"/api/v1/account/push-test","type":0,"val":"account","end":""},{"old":"/api/v1/account/push-test","type":0,"val":"push-test","end":""}],
+    types: placeholder as Registry['push_test.store']['types'],
+  },
 } as const satisfies Record<string, AdonisEndpoint>
 
 export { routes }

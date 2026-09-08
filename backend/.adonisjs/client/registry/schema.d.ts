@@ -103,4 +103,40 @@ export interface Registry {
       errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/projects_controller').default['destroy']>>>
     }
   }
+  'device_tokens.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/account/device-tokens'
+    types: {
+      body: ExtractBody<InferInput<(typeof import('#validators/device_token').registerDeviceTokenValidator)>>
+      paramsTuple: []
+      params: {}
+      query: ExtractQuery<InferInput<(typeof import('#validators/device_token').registerDeviceTokenValidator)>>
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/device_tokens_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/device_tokens_controller').default['store']>>> | { status: 422; response: { errors: SimpleError[] } }
+    }
+  }
+  'device_tokens.destroy': {
+    methods: ["DELETE"]
+    pattern: '/api/v1/account/device-tokens/:token'
+    types: {
+      body: {}
+      paramsTuple: [ParamValue]
+      params: { token: ParamValue }
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/device_tokens_controller').default['destroy']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/device_tokens_controller').default['destroy']>>>
+    }
+  }
+  'push_test.store': {
+    methods: ["POST"]
+    pattern: '/api/v1/account/push-test'
+    types: {
+      body: {}
+      paramsTuple: []
+      params: {}
+      query: {}
+      response: ExtractResponse<Awaited<ReturnType<import('#controllers/push_test_controller').default['store']>>>
+      errorResponse: ExtractErrorResponse<Awaited<ReturnType<import('#controllers/push_test_controller').default['store']>>>
+    }
+  }
 }
