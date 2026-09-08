@@ -34,6 +34,12 @@ You need both processes running at once. Each app pins its Node version via
 `.nvmrc` (also at the repo root) — run `nvm use` in a directory before installing
 if you use [nvm](https://github.com/nvm-sh/nvm).
 
+Once each side has been set up once (install + `.env`, see below), start both with:
+
+```sh
+./dev.sh
+```
+
 ### Backend (http://localhost:3333)
 
 ```sh
